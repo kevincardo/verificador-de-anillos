@@ -1,0 +1,10 @@
+# Virtual environment
+.venv/
+
+# PyCharm
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.py[cod]
