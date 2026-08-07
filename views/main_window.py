@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from views.result_window import ResultWindow
 
 
 class MainWindow(ctk.CTk):
@@ -26,11 +27,27 @@ class MainWindow(ctk.CTk):
 
 
     def show_error(self, message: str) -> None:
-        pass
+        self.error_label.configure(text = message)
 
 
     def clean_error(self) -> None:
-        pass
+        self.error_label.configure(text = "")
+
+
+    def on_verify(self) -> None:
+        self.clean_error()
+        n_text: str = self.n_entry.get()
+
+        success: bool
+        message: str
+        success, message = self.controller.verify_ring(n_text)
+
+        if not success:
+            self.show_error(message)
+            return
+
+        self.n_entry.delete(0, "end")
+        ResultWindow(int(n_text))
 
 
     def _configure_window(self) -> None:
@@ -62,13 +79,15 @@ class MainWindow(ctk.CTk):
             master = self.content_frame,
             text = "Verificar",
             font = ("Segoe UI", 16, "bold"),
-            command = self.controller.verify_ring
+            command = self.on_verify
         )
         self.error_label = ctk.CTkLabel(
             master = self.content_frame,
             text = "",
             text_color = "red",
         )
+
+        self.n_entry.bind("<KeyRelease>", self._on_text_changed)
 
 
     def _place_widgets(self) -> None:
@@ -113,3 +132,8 @@ class MainWindow(ctk.CTk):
             pady = 10,
             sticky = "nsew"
         )
+
+
+    def _on_text_changed(self, event) -> None:
+        self.clean_error()
+

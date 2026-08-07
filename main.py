@@ -5,7 +5,6 @@ from views.main_window import MainWindow
 def main() -> None:
     controller: AppController = AppController()
     app: MainWindow = MainWindow(controller)
-    controller.set_view(app)
 
     app.mainloop()
 
