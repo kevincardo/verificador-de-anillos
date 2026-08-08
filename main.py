@@ -10,7 +10,7 @@ def main() -> None:
 
     z5 = Zn(5)
     ring_verifier = RingVerifier(z5)
-    print(ring_verifier.verify_additive_associativity())
+    print(ring_verifier.verify_multiplicative_inverses())
     #for row in z5.multiplication_table():
         #print(row)
 
