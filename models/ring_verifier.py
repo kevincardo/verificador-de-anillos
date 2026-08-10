@@ -1,6 +1,7 @@
 from models.zn import Zn
 from models.property_result import PropertyResult
 from itertools import product
+from models.verification_result import VerificationResult
 
 
 class RingVerifier:
@@ -317,23 +318,97 @@ class RingVerifier:
                 return PropertyResult(
                     name = "Inversos multiplicativos",
                     is_valid = False,
-                    explanation = (
-                        f"El elemento {a} no posee un inverso multiplicativo "
-                        f"en Z{self.n}."
-                    )
+                    explanation = f"El elemento {a} no posee un inverso multiplicativo "
+                            f"en Z{self.n}."
                 )
 
         return PropertyResult(
             name = "Inversos multiplicativos",
             is_valid = True,
-            explanation = (
-                f"Todo elemento distinto de 0 de Z{self.n} posee "
-                f"un inverso multiplicativo respecto al elemento "
-                f"neutro {identity}."
-            )
+            explanation = f"Todo elemento distinto de 0 de Z{self.n} posee "
+                    f"un inverso multiplicativo respecto al elemento "
+                    f"neutro {identity}."
         )
 
 
+    def verify_all(self) -> VerificationResult:
+        additive_closure: PropertyResult = self.verify_additive_closure()
+        additive_associativity: PropertyResult = self.verify_additive_associativity()
+        additive_identity: PropertyResult = self.verify_additive_identity()
+        additive_inverses: PropertyResult = self.verify_additive_inverses()
+        additive_commutativity: PropertyResult = self.verify_additive_commutativity()
+
+        multiplicative_closure: PropertyResult = self.verify_multiplicative_closure()
+        multiplicative_associativity: PropertyResult = self.verify_multiplicative_associativity()
+        multiplicative_identity: PropertyResult = self.verify_multiplicative_identity()
+        multiplicative_inverses: PropertyResult = self.verify_multiplicative_inverses()
+        multiplicative_commutativity: PropertyResult = self.verify_multiplicative_commutativity()
+
+        distributivity: PropertyResult = self.verify_distributivity()
+
+        additive_group: PropertyResult = PropertyResult(
+            name = "Grupo bajo la suma",
+            is_valid = additive_closure.is_valid
+                    and additive_inverses.is_valid
+                    and additive_identity.is_valid
+                    and additive_associativity.is_valid,
+            explanation = "La suma cumple todas las propiedades necesarias para ser un grupo."
+        )
+
+        additive_abelian_group: PropertyResult = PropertyResult(
+            name = "Grupo Abeliano bajo la suma",
+            is_valid = additive_group.is_valid
+                    and distributivity.is_valid,
+            explanation = "La suma cumple todas las propiedades necesarias para ser un grupo abeliano."
+        )
+
+        multiplicative_semigroup: PropertyResult = PropertyResult(
+            name = "Semigrupo bajo el producto",
+            is_valid = multiplicative_associativity.is_valid
+                    and multiplicative_closure.is_valid,
+            explanation = "El producto cumple todas las propiedades necesarias para ser un semigrupo."
+        )
+
+        ring: PropertyResult = PropertyResult(
+            name = "Anillo",
+            is_valid = additive_abelian_group.is_valid
+                    and multiplicative_semigroup.is_valid
+                    and distributivity.is_valid,
+            explanation = "Es anillo porque es un grupo abeliano bajo la suma, semigrupo bajo el producto y "
+                    "es distributivo tanto por izquierda como por derecha."
+        )
+
+        commutative_ring: PropertyResult = PropertyResult(
+            name = "Anillo conmutativo",
+            is_valid = ring.is_valid
+                    and multiplicative_commutativity.is_valid,
+            explanation = "Es anillo conmutativo porque aparte de ser anillo su producto es conmutativo."
+        )
+
+        field: PropertyResult = PropertyResult(
+            name = "Cuerpo",
+            is_valid = commutative_ring.is_valid
+                    and multiplicative_identity.is_valid
+                    and multiplicative_inverses.is_valid,
+            explanation = "Es cuerpo (o campo) porque es un anillo conmutativo que tiene un elemento identidad y "
+                    "para todos los elementos distintos de 0, existe un inverso multiplicativo"
+        )
+
+        return VerificationResult(
+            n = self.n,
+            additive_group = additive_group,
+            multiplicative_semigroup = multiplicative_semigroup,
+            additive_abelian_group = additive_abelian_group,
+            ring = ring,
+            commutative_ring = commutative_ring,
+            field = field,
+            additive_identity = self.additive_identity,
+            additive_inverses = self.additive_inverses,
+            multiplicative_inverses = self.multiplicative_inverses,
+            multiplicative_identity = self.multiplicative_identity,
+            addition_table = self.zn.addition_table(),
+            multiplication_table = self.zn.multiplication_table(),
+        )
 
 
     def _verify_additive_closure(self, a: int, b: int) -> PropertyResult:

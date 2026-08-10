@@ -1,4 +1,7 @@
 import customtkinter as ctk
+
+from controllers import app_controller
+from models.verification_result import VerificationResult
 from views.result_window import ResultWindow
 
 
@@ -40,14 +43,15 @@ class MainWindow(ctk.CTk):
 
         success: bool
         message: str
-        success, message = self.controller.verify_ring(n_text)
+        result: VerificationResult | None
+        success, message, result = self.controller.verify_ring(n_text)
 
         if not success:
             self.show_error(message)
             return
 
         self.n_entry.delete(0, "end")
-        ResultWindow(int(n_text))
+        ResultWindow(result)
 
 
     def _configure_window(self) -> None:
