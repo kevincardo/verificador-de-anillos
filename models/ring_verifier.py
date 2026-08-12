@@ -50,7 +50,7 @@ class RingVerifier:
             name = "Clausura bajo el producto",
             is_valid = True,
             explanation = f"Se verifico que para todos los pares (a, b) pertenecientes a Z{self.n},"
-                        f" a * b (mod n) tambien pertenece a Z{self.n}"
+                    f" a * b (mod n) tambien pertenece a Z{self.n}"
         )
 
 
@@ -84,7 +84,7 @@ class RingVerifier:
                 return PropertyResult(
                     name = "Elemento neutro en la suma",
                     is_valid = True,
-                    explanation = f"Se encontró el elemento e = {e} perteneciente a Z{self.n} "
+                    explanation = f"Se encontro el elemento e = {e} perteneciente a Z{self.n} "
                             f"tal que para todo a perteneciente a Z{self.n}, "
                             "e + a = a = a + e = a."
                 )
@@ -94,7 +94,7 @@ class RingVerifier:
         return PropertyResult(
             name = "Elemento neutro en la suma",
             is_valid = False,
-            explanation = f"No se encontró ningún elemento e perteneciente a Z{self.n} "
+            explanation = f"No se encontro ningun elemento e perteneciente a Z{self.n} "
                     f"tal que para todo a perteneciente a Z{self.n}, "
                     "e + a = a y a + e = a."
         )
@@ -130,13 +130,14 @@ class RingVerifier:
                     name = "Inversos aditivos",
                     is_valid = False,
                     explanation = f"El elemento {a} no posee un inverso aditivo "
+                            f"en Z{self.n}."
                 )
 
         return PropertyResult(
             name = "Inversos aditivos",
             is_valid = True,
             explanation = f"Todo elemento de Z{self.n} posee un inverso aditivo "
-                f"respecto al elemento neutro {identity}."
+                    f"respecto al elemento neutro {identity}."
         )
 
 
@@ -150,13 +151,14 @@ class RingVerifier:
                     name = "Conmutatividad para la suma",
                     is_valid = False,
                     explanation = f"Existe la suma {a} + {b} = {result1}"
-                            f" que no es igual a {b} + {a} = {result2} "
+                            f" que no es igual a {b} + {a} = {result2}"
                 )
 
         return PropertyResult(
             name = "Conmutatividad para la suma",
             is_valid = True,
-            explanation = f"Se verifico que para todo numero perteneciente a Z{self.n} a + b = b + a"
+            explanation = f"Se verifico que para todo numero perteneciente a Z{self.n} "
+                    "a + b = b + a"
         )
 
 
@@ -171,49 +173,57 @@ class RingVerifier:
             name = "Asociatividad para el producto",
             is_valid = True,
             explanation = f"Para todo a, b, c pertenecientes a Z{self.n}"
-            " (a * b) * c es igual a a * (b * c)"
+                    " (a * b) * c es igual a a * (b * c)"
         )
 
 
     def verify_left_distributivity(self) -> PropertyResult:
         for a, b, c in product(range(self.n), range(self.n), range(self.n)):
             left: int = self.zn.multiply(a, self.zn.add(b, c))
-            right: int = self.zn.add(self.zn.multiply(a, b), self.zn.multiply(a, c))
+            right: int = self.zn.add(
+                self.zn.multiply(a, b),
+                self.zn.multiply(a, c)
+            )
 
-            if not left == right:
+            if left != right:
                 return PropertyResult(
                     name = "Distributividad por la izquierda",
                     is_valid = False,
-                    explanation = f"Existe un a = {a}, b = {b}, c = {c} pertencientes a Z{self.n}"
-                            f" tal que a * (b + c) = {left} NO es igual a a * b + a * c = {right}"
+                    explanation = f"Existe un a = {a}, b = {b}, c = {c} pertenecientes a Z{self.n}"
+                            f" tal que a * (b + c) = {left} NO es igual a "
+                            f"a * b + a * c = {right}"
                 )
 
         return PropertyResult(
             name = "Distributividad por la izquierda",
             is_valid = True,
-            explanation = f"Para todo a, b, c pertenecientes a Z{self.n}"
+            explanation = f"Para todo a, b, c pertenecientes a Z{self.n} "
                     "se cumple que a * (b + c) = a * b + a * c"
-            )
+        )
 
 
     def verify_right_distributivity(self) -> PropertyResult:
         for a, b, c in product(range(self.n), range(self.n), range(self.n)):
             left: int = self.zn.multiply(self.zn.add(a, b), c)
-            right: int = self.zn.add(self.zn.multiply(a, c), self.zn.multiply(b, c))
+            right: int = self.zn.add(
+                self.zn.multiply(a, c),
+                self.zn.multiply(b, c)
+            )
 
-            if not left == right:
+            if left != right:
                 return PropertyResult(
-                    name = "Distributividad por la izquierda",
+                    name = "Distributividad por la derecha",
                     is_valid = False,
-                    explanation = f"Existe un a = {a}, b = {b}, c = {c} pertencientes a Z{self.n}"
-                                f" tal que (a + b) * c = {left} NO es igual a a * c + b * c = {right}"
+                    explanation = f"Existe un a = {a}, b = {b}, c = {c} pertenecientes a Z{self.n}"
+                            f" tal que (a + b) * c = {left} NO es igual a "
+                            f"a * c + b * c = {right}"
                 )
 
         return PropertyResult(
-            name = "Distributividad por la izquierda",
+            name = "Distributividad por la derecha",
             is_valid = True,
-            explanation = f"Para todo a, b, c pertenecientes a Z{self.n}"
-                    " se cumple que (a + b) * c = a * c + b * c"
+            explanation = f"Para todo a, b, c pertenecientes a Z{self.n} "
+                    "se cumple que (a + b) * c = a * c + b * c"
         )
 
 
@@ -226,21 +236,22 @@ class RingVerifier:
                 name = "Distributividad",
                 is_valid = False,
                 explanation = f"Para todo a, b, c perteneciente a Z{self.n}"
-                        f" no se cumple la distributividad en izquierda y derecha"
+                        " no se cumple la distributividad en izquierda y derecha"
             )
 
         return PropertyResult(
             name = "Distributividad",
             is_valid = True,
-            explanation = f"Para todo a, b, c perteneciente a Z{self.n}"
-                    " se cumple que a * (b + c) = a * b + a * c y"
-                    " se cumple que (a + b) * c = a * b + a * c"
+            explanation = f"Para todo a, b, c perteneciente a Z{self.n} "
+                    "se cumple que a * (b + c) = a * b + a * c y "
+                    "se cumple que (a + b) * c = a * c + b * c"
         )
 
 
     def verify_multiplicative_commutativity(self) -> PropertyResult:
         for a, b in product(range(self.n), range(self.n)):
             result: PropertyResult = self._verify_multiplicative_commutativity(a, b)
+
             if not result.is_valid:
                 return result
 
@@ -255,6 +266,7 @@ class RingVerifier:
     def verify_multiplicative_identity(self) -> PropertyResult:
         for e in self.zn.elements():
             is_identity = True
+
             for a in self.zn.elements():
                 if self.zn.multiply(e, a) != a or self.zn.multiply(a, e) != a:
                     is_identity = False
@@ -267,7 +279,7 @@ class RingVerifier:
                     name = "Elemento neutro en el producto",
                     is_valid = True,
                     explanation = (
-                        f"Se encontró el elemento e = {e} perteneciente a Z{self.n} "
+                        f"Se encontro el elemento e = {e} perteneciente a Z{self.n} "
                         "tal que para todo a perteneciente a Zn, "
                         "e * a = a y a * e = a."
                     )
@@ -279,7 +291,7 @@ class RingVerifier:
             name = "Elemento neutro en el producto",
             is_valid = False,
             explanation = (
-                f"No se encontró ningún elemento e perteneciente a Z{self.n} "
+                f"No se encontro ningun elemento e perteneciente a Z{self.n} "
                 "tal que para todo a perteneciente a Zn, "
                 "e * a = a y a * e = a."
             )
@@ -288,13 +300,13 @@ class RingVerifier:
 
     def verify_multiplicative_inverses(self) -> PropertyResult:
         if self.multiplicative_identity is None:
-            identity_result = self.verify_multiplicative_identity()
+            identity_result: PropertyResult = self.verify_multiplicative_identity()
 
             if not identity_result.is_valid:
                 return PropertyResult(
-                    name="Inversos multiplicativos",
-                    is_valid=False,
-                    explanation=(
+                    name = "Inversos multiplicativos",
+                    is_valid = False,
+                    explanation = (
                         "No se pueden verificar los inversos multiplicativos "
                         "porque no existe un elemento neutro multiplicativo."
                     )
@@ -308,6 +320,7 @@ class RingVerifier:
                 continue
 
             found_inverse = False
+
             for b in self.zn.elements():
                 if self.zn.multiply(a, b) == identity and self.zn.multiply(b, a) == identity:
                     self.multiplicative_inverses[a] = b
@@ -318,16 +331,20 @@ class RingVerifier:
                 return PropertyResult(
                     name = "Inversos multiplicativos",
                     is_valid = False,
-                    explanation = f"El elemento {a} no posee un inverso multiplicativo "
-                            f"en Z{self.n}."
+                    explanation = (
+                        f"El elemento {a} no posee un inverso multiplicativo "
+                        f"en Z{self.n}."
+                    )
                 )
 
         return PropertyResult(
             name = "Inversos multiplicativos",
             is_valid = True,
-            explanation = f"Todo elemento distinto de 0 de Z{self.n} posee "
-                    f"un inverso multiplicativo respecto al elemento "
-                    f"neutro {identity}."
+            explanation = (
+                f"Todo elemento distinto de 0 de Z{self.n} posee "
+                f"un inverso multiplicativo respecto al elemento "
+                f"neutro {identity}."
+            )
         )
 
 
@@ -358,7 +375,7 @@ class RingVerifier:
         additive_abelian_group: PropertyResult = PropertyResult(
             name = "Grupo Abeliano bajo la suma",
             is_valid = additive_group.is_valid
-                    and distributivity.is_valid,
+                    and additive_commutativity.is_valid,
             explanation = "La suma cumple todas las propiedades necesarias para ser un grupo abeliano."
         )
 
@@ -391,7 +408,7 @@ class RingVerifier:
                     and multiplicative_identity.is_valid
                     and multiplicative_inverses.is_valid,
             explanation = "Es cuerpo (o campo) porque es un anillo conmutativo que tiene un elemento identidad y "
-                    "para todos los elementos distintos de 0, existe un inverso multiplicativo"
+                    "para todos los elementos distintos de 0, existe un inverso multiplicativo."
         )
 
         return VerificationResult(
@@ -426,7 +443,7 @@ class RingVerifier:
             name = "Clausura bajo la suma",
             is_valid = True,
             explanation = f"Se verifico que para todos los pares (a, b) pertenecientes a Z{self.n},"
-                        f" a + b (mod n) tambien pertenece a Z{self.n}"
+                    f" a + b (mod n) tambien pertenece a Z{self.n}"
         )
 
 

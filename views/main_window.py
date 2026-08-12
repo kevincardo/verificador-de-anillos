@@ -1,5 +1,4 @@
 import customtkinter as ctk
-
 from controllers import app_controller
 from models.verification_result import VerificationResult
 from views.result_window import ResultWindow
